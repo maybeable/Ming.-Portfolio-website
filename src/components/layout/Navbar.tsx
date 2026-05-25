@@ -31,21 +31,21 @@ export function Navbar() {
           : "bg-transparent",
       )}
     >
-      <nav className="container-base flex items-center justify-between h-16">
+      <nav className="container-base flex items-center justify-between h-16 relative">
         <Link
           href="/"
-          className="text-lg font-bold tracking-tight text-foreground"
+          className="text-lg font-bold tracking-tight text-foreground shrink-0"
         >
           Portfolio
         </Link>
 
-        <ul className="flex items-center gap-8">
+        <ul className="flex items-center gap-6 md:gap-10 md:absolute md:left-1/2 md:-translate-x-1/2">
           {links.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
                 className={cn(
-                  "text-body-sm font-medium transition-colors duration-200",
+                  "text-body-sm md:text-body font-medium transition-colors duration-200",
                   pathname === link.href
                     ? "text-primary"
                     : "text-foreground-muted hover:text-foreground",

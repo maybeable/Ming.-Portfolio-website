@@ -5,16 +5,16 @@ import { ProjectCard } from "@/components/cards/ProjectCard";
 
 const projects = [
   {
-    title: "品牌视觉识别系统",
+    title: "品牌视觉设计展示",
     category: "品牌设计",
     coverSrc: "https://picsum.photos/seed/design1/800/600",
-    coverAlt: "品牌视觉识别系统封面",
+    coverAlt: "品牌视觉设计展示封面",
   },
   {
-    title: "2026 春季展览海报",
+    title: "海报视觉设计展示",
     category: "海报设计",
     coverSrc: "https://picsum.photos/seed/design2/800/600",
-    coverAlt: "春季展览海报封面",
+    coverAlt: "海报视觉设计展示封面",
   },
   {
     title: "极简杂志编排设计",

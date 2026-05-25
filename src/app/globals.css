@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* ============================================
+   设计系统 — Design System
+   蓝白极简 · 编辑式排版 · 大量留白
+   ============================================ */
+
+/* ----- 颜色系统 ----- */
+@theme {
+  --color-primary: #2563EB;
+  --color-primary-light: #3B82F6;
+  --color-background: #FFFFFF;
+  --color-background-soft: #F8FAFC;
+  --color-foreground: #0F172A;
+  --color-foreground-muted: #475569;
+  --color-border: #E2E8F0;
+  --color-hover: #DBEAFE;
+}
+
+/* ----- 字体系统 ----- */
+@theme {
+  --font-family-sans: "Inter", "Geist", "SF Pro Display", ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: "Geist Mono", ui-monospace, monospace;
+
+  /* 编辑式排版层级 */
+  --font-size-display: 4.5rem;
+  --font-size-display--line-height: 1.05;
+  --font-size-display--font-weight: 700;
+  --font-size-display--letter-spacing: -0.025em;
+
+  --font-size-h1: 3.5rem;
+  --font-size-h1--line-height: 1.1;
+  --font-size-h1--font-weight: 700;
+  --font-size-h1--letter-spacing: -0.02em;
+
+  --font-size-h2: 2.5rem;
+  --font-size-h2--line-height: 1.15;
+  --font-size-h2--font-weight: 600;
+  --font-size-h2--letter-spacing: -0.015em;
+
+  --font-size-h3: 2rem;
+  --font-size-h3--line-height: 1.2;
+  --font-size-h3--font-weight: 600;
+  --font-size-h3--letter-spacing: -0.01em;
+
+  --font-size-h4: 1.5rem;
+  --font-size-h4--line-height: 1.3;
+  --font-size-h4--font-weight: 600;
+
+  --font-size-body-lg: 1.125rem;
+  --font-size-body-lg--line-height: 1.6;
+
+  --font-size-body: 1rem;
+  --font-size-body--line-height: 1.6;
+
+  --font-size-body-sm: 0.875rem;
+  --font-size-body-sm--line-height: 1.5;
+
+  --font-size-caption: 0.75rem;
+  --font-size-caption--line-height: 1.5;
+  --font-size-caption--letter-spacing: 0.02em;
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+}
+
+/* ----- 间距系统（8px 网格）----- */
+@theme {
+  --spacing-section-desktop: 7.5rem;  /* 120px */
+  --spacing-section-tablet: 5rem;     /* 80px */
+  --spacing-section-mobile: 3.75rem;  /* 60px */
+}
+
+/* ----- 圆角系统 ----- */
+@theme {
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-card: 1.25rem; /* 20px — 卡片专用 */
+  --radius-full: 9999px;
+}
+
+/* ----- 基础样式 ----- */
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ----- 全局 Container — 最大宽度 1440px，充裕留白 ----- */
+.container,
+.container-base {
+  width: 100%;
+  max-width: 90rem; /* 1440px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.5rem, 5vw, 4rem);
+  padding-right: clamp(1.5rem, 5vw, 4rem);
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: 64rem; /* 1024px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.5rem, 5vw, 4rem);
+  padding-right: clamp(1.5rem, 5vw, 4rem);
+}
+
+.container-wide {
+  width: 100%;
+  max-width: 100rem; /* 1600px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.5rem, 5vw, 4rem);
+  padding-right: clamp(1.5rem, 5vw, 4rem);
+}
+
+/* ----- 排版基础样式 ----- */
+h1, .h1 { font-size: var(--font-size-h1); line-height: var(--font-size-h1--line-height); font-weight: var(--font-size-h1--font-weight); letter-spacing: var(--font-size-h1--letter-spacing); }
+h2, .h2 { font-size: var(--font-size-h2); line-height: var(--font-size-h2--line-height); font-weight: var(--font-size-h2--font-weight); letter-spacing: var(--font-size-h2--letter-spacing); }
+h3, .h3 { font-size: var(--font-size-h3); line-height: var(--font-size-h3--line-height); font-weight: var(--font-size-h3--font-weight); letter-spacing: var(--font-size-h3--letter-spacing); }
+h4, .h4 { font-size: var(--font-size-h4); line-height: var(--font-size-h4--line-height); font-weight: var(--font-size-h4--font-weight); }
+
+p {
+  font-size: var(--font-size-body);
+  line-height: var(--font-size-body--line-height);
+  color: var(--color-foreground-muted);
+}
+
+/* ----- 选中样式 ----- */
+::selection {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+/* ----- 焦点环 ----- */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

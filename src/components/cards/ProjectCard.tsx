@@ -37,7 +37,7 @@ export function ProjectCard({
           alt={coverAlt}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+          className="object-contain transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           priority={priority}
         />
         {/* 悬停渐变叠加层 */}

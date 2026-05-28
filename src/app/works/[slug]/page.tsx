@@ -41,9 +41,12 @@ export default async function ProjectPage({ params }: Props) {
 
   const { frontmatter, content } = project;
   const allProjects = getAllProjects();
-  const currentIndex = allProjects.findIndex((p) => p.slug === slug);
+  const currentOrder = frontmatter.order ?? 99;
+  const currentIndex = allProjects.findIndex(
+    (p) => (p.frontmatter.order ?? 99) === currentOrder
+  );
   const nextProject =
-    currentIndex < allProjects.length - 1
+    currentIndex >= 0 && currentIndex < allProjects.length - 1
       ? allProjects[currentIndex + 1]
       : allProjects[0];
 
@@ -154,6 +157,7 @@ export default async function ProjectPage({ params }: Props) {
         <Container size="narrow">
           <AnimatedContainer>
             <NextProject
+              order={nextProject.frontmatter.order}
               title={nextProject.frontmatter.title}
               slug={nextProject.slug}
             />

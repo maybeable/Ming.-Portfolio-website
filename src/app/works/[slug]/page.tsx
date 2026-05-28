@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <>
-      {/* Hero 大图 */}
+      {/* Hero */}
       <ProjectHero
         title={frontmatter.title}
         category={frontmatter.category}
@@ -58,18 +58,29 @@ export default async function ProjectPage({ params }: Props) {
         heroAlt={frontmatter.title}
       />
 
-      {/* 项目概述 */}
-      <Section>
+      {/* 项目概述 + 返回链接 */}
+      <Section className="pt-16 md:pt-24">
         <Container size="narrow">
           <AnimatedContainer>
             <BackLink />
           </AnimatedContainer>
           <AnimatedContainer delay={0.1}>
-            <ProjectOverview
-              category={frontmatter.category}
-              year={frontmatter.year}
-              description={frontmatter.description}
-            />
+            <div className="mt-12">
+              <ProjectOverview
+                category={frontmatter.category}
+                year={frontmatter.year}
+                description={frontmatter.description}
+              />
+            </div>
+          </AnimatedContainer>
+        </Container>
+      </Section>
+
+      {/* 分隔线 */}
+      <Section className="py-0">
+        <Container>
+          <AnimatedContainer>
+            <hr className="border-border/40" />
           </AnimatedContainer>
         </Container>
       </Section>
@@ -78,10 +89,12 @@ export default async function ProjectPage({ params }: Props) {
       {frontmatter.images.length > 0 && (
         <Section>
           <Container>
-            <AnimatedContainer>
-              <SectionTitle label="Gallery" title="视觉展示" />
-              <ProjectGallery images={frontmatter.images} />
-            </AnimatedContainer>
+            <SectionTitle
+              label="Gallery"
+              title="视觉展示"
+              description="从不同角度呈现设计的视觉语言与细节表达。"
+            />
+            <ProjectGallery images={frontmatter.images} />
           </Container>
         </Section>
       )}
@@ -135,7 +148,7 @@ export default async function ProjectPage({ params }: Props) {
       )}
 
       {/* 底部导航 */}
-      <Section>
+      <Section className="pb-16 md:pb-24">
         <Container size="narrow">
           <AnimatedContainer>
             <NextProject

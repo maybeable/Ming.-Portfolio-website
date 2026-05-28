@@ -39,22 +39,28 @@ export function Navbar() {
           Portfolio
         </Link>
 
-        <ul className="flex items-center gap-6 md:gap-10 md:absolute md:left-1/2 md:-translate-x-1/2">
-          {links.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className={cn(
-                  "text-body-sm md:text-body font-medium transition-colors duration-200",
-                  pathname === link.href
-                    ? "text-primary"
-                    : "text-foreground-muted hover:text-foreground",
-                )}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
+        <ul className="flex items-center gap-1 md:absolute md:left-1/2 md:-translate-x-1/2">
+          {links.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={cn(
+                    "relative px-3 py-2 text-body-sm md:text-body font-medium transition-colors duration-200 rounded-lg",
+                    isActive
+                      ? "text-primary"
+                      : "text-foreground-muted hover:text-foreground",
+                  )}
+                >
+                  {link.label}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+                  )}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </header>

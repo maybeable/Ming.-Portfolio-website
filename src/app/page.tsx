@@ -1,54 +1,108 @@
+import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
-import { Grid } from "@/components/layout/Grid";
 import { ProjectCard } from "@/components/cards/ProjectCard";
-
-const projects = [
-  {
-    title: "品牌视觉设计展示",
-    category: "品牌设计",
-    coverSrc: "https://picsum.photos/seed/design1/800/600",
-    coverAlt: "品牌视觉设计展示封面",
-  },
-  {
-    title: "海报视觉设计展示",
-    category: "海报设计",
-    coverSrc: "https://picsum.photos/seed/design2/800/600",
-    coverAlt: "海报视觉设计展示封面",
-  },
-  {
-    title: "极简杂志编排设计",
-    category: "编辑设计",
-    coverSrc: "https://picsum.photos/seed/design3/800/600",
-    coverAlt: "杂志编排设计封面",
-  },
-];
+import { AnimatedContainer } from "@/components/layout/AnimatedContainer";
+import { getAllProjects } from "@/lib/mdx";
 
 export default function Home() {
+  const projects = getAllProjects().slice(0, 3);
+
   return (
     <>
-      <Section>
+      {/* ==================== Hero ==================== */}
+      <Section className="pt-40 pb-20 md:pt-64 md:pb-32 relative overflow-hidden">
+        {/* 装饰性几何元素 */}
+        <div
+          className="absolute top-0 right-0 w-[40rem] h-[40rem] -translate-y-1/2 translate-x-1/4 rounded-full border border-border/30"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute bottom-0 left-0 w-[28rem] h-[28rem] translate-y-1/3 -translate-x-1/4 rounded-full border border-border/20"
+          aria-hidden="true"
+        />
+
         <Container size="narrow">
-          <h1 className="text-display">创造有意义的设计</h1>
-          <p className="text-body-lg text-foreground-muted mt-6 max-w-xl">
-            专注平面设计与视觉传达，探索形式与功能的平衡。
-          </p>
+          <AnimatedContainer>
+            <p className="text-caption uppercase tracking-[0.1em] text-primary/70 font-medium mb-8">
+              Portfolio &mdash; 2026
+            </p>
+            <h1 className="text-display max-w-4xl">
+              创造有意义
+              <br />
+              <span className="text-primary">的设计</span>
+            </h1>
+            <p className="text-body-lg text-foreground-muted mt-8 max-w-lg leading-relaxed">
+              专注平面设计与视觉传达，探索形式与功能的平衡。
+              每一个项目都是对视觉语言的深度思考。
+            </p>
+
+            {/* 装饰性分隔 */}
+            <div className="mt-16 flex items-center gap-6">
+              <span className="block w-12 h-px bg-primary/40" />
+              <span className="text-caption uppercase tracking-[0.08em] text-foreground-muted">
+                Selected Works
+              </span>
+            </div>
+          </AnimatedContainer>
         </Container>
       </Section>
 
-      <Section>
+      {/* ==================== Projects ==================== */}
+      <Section className="pt-0">
         <Container>
-          <Grid cols={3}>
-            {projects.map((project) => (
-              <ProjectCard
-                key={project.coverSrc}
-                title={project.title}
-                category={project.category}
-                coverSrc={project.coverSrc}
-                coverAlt={project.coverAlt}
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+            {projects.map((project, i) => (
+              <AnimatedContainer key={project.slug} delay={i * 0.12}>
+                <ProjectCard
+                  title={project.frontmatter.title}
+                  category={project.frontmatter.category}
+                  coverSrc={project.frontmatter.cover}
+                  coverAlt={project.frontmatter.title}
+                  href={`/works/${project.slug}`}
+                  index={i}
+                />
+              </AnimatedContainer>
             ))}
-          </Grid>
+          </div>
+
+          {/* 查看全部链接 */}
+          <AnimatedContainer delay={0.3}>
+            <div className="mt-16 text-center">
+              <Link
+                href="/works"
+                className="inline-flex items-center gap-2 text-body font-medium text-foreground-muted hover:text-primary transition-colors duration-200"
+              >
+                查看全部作品
+                <span className="text-lg leading-none">&rarr;</span>
+              </Link>
+            </div>
+          </AnimatedContainer>
+        </Container>
+      </Section>
+
+      {/* ==================== CTA ==================== */}
+      <Section>
+        <Container size="narrow">
+          <AnimatedContainer>
+            <div className="border-t border-border pt-16 md:pt-24 flex flex-col md:flex-row md:items-end justify-between gap-8">
+              <div>
+                <h2 className="text-h2 md:text-h1 max-w-lg">
+                  有项目要合作？
+                </h2>
+                <p className="text-body-lg text-foreground-muted mt-4 max-w-md">
+                  无论品牌识别、编辑设计还是数字产品&mdash;&mdash;一起创造一些有意义的设计。
+                </p>
+              </div>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 text-body-lg font-medium text-primary hover:text-primary/80 transition-colors duration-200 shrink-0"
+              >
+                取得联系
+                <span className="text-xl leading-none">&rarr;</span>
+              </Link>
+            </div>
+          </AnimatedContainer>
         </Container>
       </Section>
     </>

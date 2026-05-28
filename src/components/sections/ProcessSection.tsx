@@ -8,15 +8,25 @@ export function ProcessSection({ content }: ProcessSectionProps) {
     .filter((p) => p.trim().length > 0);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+    <div className="space-y-12 md:space-y-16">
       {paragraphs.map((paragraph, index) => (
-        <div key={index} className="relative pt-8 border-t border-border">
-          <span className="text-[5rem] leading-none font-bold text-border absolute -top-6 right-0 select-none">
-            {(index + 1).toString().padStart(2, "0")}
-          </span>
-          <p className="text-body text-foreground-muted leading-relaxed relative z-10 mt-4">
-            {paragraph.replace(/^##\s+.*\n?/, "").trim()}
-          </p>
+        <div
+          key={index}
+          className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 lg:gap-16"
+        >
+          {/* 序号 */}
+          <div className="lg:pt-1">
+            <span className="text-[4rem] md:text-[5rem] leading-none font-bold text-border/60 select-none tabular-nums">
+              {(index + 1).toString().padStart(2, "0")}
+            </span>
+          </div>
+
+          {/* 正文 */}
+          <div className="lg:border-l lg:border-border/30 lg:pl-16">
+            <p className="text-body-lg text-foreground-muted leading-relaxed max-w-2xl">
+              {paragraph.replace(/^##\s+.*\n?/, "").trim()}
+            </p>
+          </div>
         </div>
       ))}
     </div>

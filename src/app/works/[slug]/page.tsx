@@ -94,7 +94,9 @@ export default async function ProjectPage({ params }: Props) {
               title="视觉展示"
               description="从不同角度呈现设计的视觉语言与细节表达。"
             />
-            <ProjectGallery images={frontmatter.images} />
+            <div className="md:max-w-3xl">
+              <ProjectGallery images={frontmatter.images} />
+            </div>
           </Container>
         </Section>
       )}

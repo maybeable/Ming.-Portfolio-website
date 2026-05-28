@@ -87,7 +87,7 @@ export default async function ProjectPage({ params }: Props) {
 
       {/* 图片画廊 */}
       {frontmatter.images.length > 0 && (
-        <Section>
+        <Section className="pt-8 md:pt-14">
           <Container>
             <SectionTitle
               label="Gallery"

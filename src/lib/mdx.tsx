@@ -6,6 +6,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 const contentDir = path.join(process.cwd(), "content/works");
 
 export interface ProjectFrontmatter {
+  order?: number;
   title: string;
   category: string;
   year: string;
@@ -48,7 +49,8 @@ export function getProject(slug: string): Project | null {
 export function getAllProjects(): Project[] {
   return getProjectSlugs()
     .map((slug) => getProject(slug))
-    .filter((p): p is Project => p !== null);
+    .filter((p): p is Project => p !== null)
+    .sort((a, b) => (a.frontmatter.order ?? 99) - (b.frontmatter.order ?? 99));
 }
 
 export async function MDXContent({ source }: { source: string }) {

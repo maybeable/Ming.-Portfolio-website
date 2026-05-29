@@ -34,32 +34,35 @@ export default function ContactPage() {
       <Section className="pt-0 pb-16 md:pb-20">
         <Container size="narrow">
           <AnimatedContainer delay={0.1}>
-            {/* Phone */}
-            <div className="mb-20 md:mb-24">
-              <p className="text-caption uppercase tracking-[0.08em] text-primary font-medium mb-5">
+            {/* Email — 视觉焦点 */}
+            <div className="mb-24 md:mb-28">
+              <p className="text-caption uppercase tracking-[0.08em] text-primary/40 font-medium mb-3">
+                Email
+              </p>
+              <a
+                href="mailto:xiaomingmin8848@gmail.com"
+                className="group relative inline-block"
+              >
+                <span className="block text-[3rem] font-extrabold leading-[1.08] tracking-[-0.02em] text-foreground transition-colors duration-300 group-hover:text-primary">
+                  xiaomingmin8848
+                  <wbr />
+                  @gmail.com
+                </span>
+                <span className="absolute -bottom-1.5 left-0 h-[2px] bg-primary transition-all duration-500 ease-out w-0 group-hover:w-full" />
+              </a>
+            </div>
+
+            {/* Phone — 次要 */}
+            <div className="mb-16 md:mb-20">
+              <p className="text-caption uppercase tracking-[0.08em] text-primary/40 font-medium mb-3">
                 Phone
               </p>
               <a
                 href="tel:+8615970032990"
                 className="group inline-block"
               >
-                <p className="text-h1 font-bold text-foreground transition-colors duration-300 group-hover:text-primary">
+                <p className="text-h4 font-medium text-foreground-muted/60 transition-colors duration-300 group-hover:text-primary">
                   +86 159-7003-2990
-                </p>
-              </a>
-            </div>
-
-            {/* Email — main CTA */}
-            <div className="mb-16 md:mb-20">
-              <p className="text-caption uppercase tracking-[0.08em] text-primary font-medium mb-5">
-                Email
-              </p>
-              <a
-                href="mailto:xiaomingmin8848@gmail.com"
-                className="group inline-block"
-              >
-                <p className="text-display text-foreground transition-colors duration-300 group-hover:text-primary">
-                  xiaomingmin8848@gmail.com
                 </p>
               </a>
             </div>

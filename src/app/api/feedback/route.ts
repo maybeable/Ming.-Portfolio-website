@@ -1,46 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
-
-interface Feedback {
-  id: string;
-  content: string;
-  name: string | null;
-  featured: boolean;
-  createdAt: string;
-}
-
-function dataPath() {
-  return path.join(process.cwd(), "data", "feedback.json");
-}
-
-async function readFeedback(): Promise<Feedback[]> {
-  const raw = await readFile(dataPath(), "utf-8");
-  return JSON.parse(raw);
-}
-
-function generateId(): string {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
+import { supabase } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const items = await readFeedback();
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get("limit") || "20", 10);
+
+    const { data: items } = await supabase
+      .from("feedback")
+      .select()
+      .order("created_at", { ascending: false });
+
+    if (!items) {
+      return NextResponse.json({ featured: [], recent: [] });
+    }
 
     const featured = items
       .filter((item) => item.featured)
       .sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
 
     const recent = items
       .sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       )
       .slice(0, limit);
 
@@ -71,24 +57,21 @@ export async function POST(request: NextRequest) {
     }
 
     if (name && name.length > 30) {
-      return NextResponse.json(
-        { error: "名字太长了。" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "名字太长了。" }, { status: 400 });
     }
 
-    const items = await readFeedback();
+    const { data: entry, error } = await supabase
+      .from("feedback")
+      .insert({ content, name })
+      .select()
+      .single();
 
-    const entry: Feedback = {
-      id: generateId(),
-      content,
-      name: name || null,
-      featured: false,
-      createdAt: new Date().toISOString(),
-    };
-
-    items.push(entry);
-    await writeFile(dataPath(), JSON.stringify(items, null, 2) + "\n", "utf-8");
+    if (error || !entry) {
+      return NextResponse.json(
+        { error: "出了点问题，请稍后再试。" },
+        { status: 500 },
+      );
+    }
 
     revalidatePath("/contact");
 

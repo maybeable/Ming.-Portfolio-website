@@ -5,7 +5,7 @@ interface Feedback {
   content: string;
   name: string | null;
   featured: boolean;
-  createdAt: string;
+  created_at: string;
 }
 
 interface ThoughtListProps {
@@ -54,7 +54,7 @@ function ThoughtCard({
         </span>
         <span className="w-1 h-1 rounded-full bg-border" />
         <span className="text-caption text-foreground-muted/50">
-          {relativeTime(message.createdAt)}
+          {relativeTime(message.created_at)}
         </span>
       </div>
     </div>

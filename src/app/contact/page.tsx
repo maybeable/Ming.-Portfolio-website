@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { readFile } from "fs/promises";
-import path from "path";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { AnimatedContainer } from "@/components/layout/AnimatedContainer";
 import { FeedbackForm } from "@/components/sections/FeedbackForm";
 import { ThoughtList } from "@/components/sections/ThoughtList";
+import { supabase } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "联系",
@@ -17,26 +16,29 @@ interface Feedback {
   content: string;
   name: string | null;
   featured: boolean;
-  createdAt: string;
+  created_at: string;
 }
 
 async function getFeedback() {
   try {
-    const dataPath = path.join(process.cwd(), "data", "feedback.json");
-    const raw = await readFile(dataPath, "utf-8");
-    const items: Feedback[] = JSON.parse(raw);
+    const { data: items } = await supabase
+      .from("feedback")
+      .select()
+      .order("created_at", { ascending: false });
 
-    const featured = items
+    if (!items) return { featured: [], recent: [] };
+
+    const featured = (items as Feedback[])
       .filter((item) => item.featured)
       .sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
 
-    const recent = items
+    const recent = (items as Feedback[])
       .sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       )
       .slice(0, 20);
 

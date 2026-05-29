@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
     }
 
     revalidatePath("/contact");
+    revalidatePath("/thoughts");
 
     return NextResponse.json({ success: true, message: entry });
   } catch (err) {

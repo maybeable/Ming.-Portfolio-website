@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -17,8 +18,13 @@ const links = [
 export function MobileMenu() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const close = useCallback(() => setOpen(false), []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 路由变化时关闭菜单
   useEffect(() => {
@@ -54,70 +60,74 @@ export function MobileMenu() {
         <Menu size={24} />
       </button>
 
-      {/* 蒙层 + 侧滑面板 */}
-      <AnimatePresence>
-        {open && (
-          <>
-            {/* 蒙层 */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/40 md:hidden"
-              onClick={close}
-              aria-hidden="true"
-            />
+      {/* 蒙层 + 侧滑面板 — Portal 到 body 避免 header backdrop-filter 裁剪 */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <>
+                {/* 蒙层 */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="fixed inset-0 z-40 bg-black/40 md:hidden"
+                  onClick={close}
+                  aria-hidden="true"
+                />
 
-            {/* 面板 */}
-            <motion.aside
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 28, stiffness: 260 }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-2/4 max-w-sm bg-white/95 backdrop-blur-md md:hidden"
-            >
-              {/* 关闭按钮 */}
-              <button
-                onClick={close}
-                className="absolute top-4 right-4 p-2 text-foreground-muted hover:text-foreground transition-colors"
-                aria-label="关闭菜单"
-              >
-                <X size={24} />
-              </button>
+                {/* 面板 */}
+                <motion.aside
+                  initial={{ x: "100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "spring", damping: 28, stiffness: 260 }}
+                  className="fixed top-0 right-0 bottom-0 z-50 w-2/4 max-w-sm bg-white/95 backdrop-blur-md md:hidden"
+                >
+                  {/* 关闭按钮 */}
+                  <button
+                    onClick={close}
+                    className="absolute top-4 right-4 p-2 text-foreground-muted hover:text-foreground transition-colors"
+                    aria-label="关闭菜单"
+                  >
+                    <X size={24} />
+                  </button>
 
-              {/* 菜单项 */}
-              <nav className="h-full flex flex-col justify-center px-8">
-                <ul className="flex flex-col gap-1">
-                  {links.map((link, i) => {
-                    const isActive = pathname === link.href;
-                    return (
-                      <motion.li
-                        key={link.href}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: 0.06 * i }}
-                      >
-                        <Link
-                          href={link.href}
-                          onClick={close}
-                          className={`
-                            block py-4 text-xl font-medium transition-colors duration-200
-                            border-b border-border/50
-                            ${isActive ? "text-primary" : "text-foreground-muted hover:text-foreground"}
-                          `}
-                        >
-                          {link.label}
-                        </Link>
-                      </motion.li>
-                    );
-                  })}
-                </ul>
-              </nav>
-            </motion.aside>
-          </>
+                  {/* 菜单项 */}
+                  <nav className="h-full flex flex-col justify-center px-8">
+                    <ul className="flex flex-col gap-1">
+                      {links.map((link, i) => {
+                        const isActive = pathname === link.href;
+                        return (
+                          <motion.li
+                            key={link.href}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3, delay: 0.06 * i }}
+                          >
+                            <Link
+                              href={link.href}
+                              onClick={close}
+                              className={`
+                                block py-4 text-xl font-medium transition-colors duration-200
+                                border-b border-border/50
+                                ${isActive ? "text-primary" : "text-foreground-muted hover:text-foreground"}
+                              `}
+                            >
+                              {link.label}
+                            </Link>
+                          </motion.li>
+                        );
+                      })}
+                    </ul>
+                  </nav>
+                </motion.aside>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </>
   );
 }

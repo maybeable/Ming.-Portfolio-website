@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { MobileMenu } from "@/components/layout/MobileMenu";
 
 const links = [
   { href: "/", label: "首页" },
@@ -32,7 +33,7 @@ export function Navbar() {
           : "bg-transparent",
       )}
     >
-      <nav className="container-base flex items-center justify-between h-16 relative">
+      <nav className="container-base flex items-center justify-between h-16">
         <Link
           href="/"
           className="text-lg font-bold tracking-tight text-foreground shrink-0"
@@ -40,7 +41,8 @@ export function Navbar() {
           Portfolio
         </Link>
 
-        <ul className="flex items-center gap-1 md:absolute md:left-1/2 md:-translate-x-1/2">
+        {/* Desktop — centered links */}
+        <ul className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
           {links.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -48,7 +50,7 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   className={cn(
-                    "relative px-3 py-2 text-body-sm md:text-body font-medium transition-colors duration-200 rounded-lg",
+                    "relative px-3 py-2 text-body font-medium transition-colors duration-200 rounded-lg",
                     isActive
                       ? "text-primary"
                       : "text-foreground-muted hover:text-foreground",
@@ -63,6 +65,9 @@ export function Navbar() {
             );
           })}
         </ul>
+
+        {/* Mobile */}
+        <MobileMenu />
       </nav>
     </header>
   );

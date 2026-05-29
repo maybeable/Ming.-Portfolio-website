@@ -15,7 +15,7 @@ export function TypographySection({ fonts }: TypographySectionProps) {
           key={font.name}
           className="border-b border-border pb-12 last:border-0 last:pb-0"
         >
-          <p className="text-[6rem] md:text-[8rem] leading-none tracking-tight text-foreground font-light">
+          <p className="text-[clamp(3rem,1.5rem+7vw,8rem)] leading-none tracking-tight text-foreground font-light">
             Aa
           </p>
           <div className="flex items-baseline gap-3 mt-4">

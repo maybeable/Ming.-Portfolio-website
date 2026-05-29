@@ -116,7 +116,7 @@ export default function AboutPage() {
           <div className="space-y-16 md:space-y-0 md:grid md:grid-cols-3 md:gap-12">
             {philosophies.map((item, i) => (
               <AnimatedContainer key={item.id} delay={i * 0.1}>
-                <span className="text-[5rem] md:text-[6rem] font-bold leading-none tracking-tighter text-primary/15">
+                <span className="text-[clamp(3rem,2rem+5vw,6rem)] font-bold leading-none tracking-tighter text-primary/15">
                   {item.id}
                 </span>
                 <h3 className="text-h3 mt-4">{item.title}</h3>

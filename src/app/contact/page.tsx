@@ -43,7 +43,7 @@ export default function ContactPage() {
                 href="mailto:xiaomingmin8848@gmail.com"
                 className="group relative inline-block"
               >
-                <span className="block text-[3rem] font-extrabold leading-[1.08] tracking-[-0.02em] text-foreground transition-colors duration-300 group-hover:text-primary">
+                <span className="block text-[clamp(1.75rem,1rem+4vw,3rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-foreground transition-colors duration-300 group-hover:text-primary">
                   xiaomingmin8848
                   <wbr />
                   @gmail.com

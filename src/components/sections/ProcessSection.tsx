@@ -16,7 +16,7 @@ export function ProcessSection({ content }: ProcessSectionProps) {
         >
           {/* 序号 */}
           <div className="lg:pt-1">
-            <span className="text-[4rem] md:text-[5rem] leading-none font-bold text-border/60 select-none tabular-nums">
+            <span className="text-[clamp(2.5rem,1.5rem+4vw,5rem)] leading-none font-bold text-border/60 select-none tabular-nums">
               {(index + 1).toString().padStart(2, "0")}
             </span>
           </div>

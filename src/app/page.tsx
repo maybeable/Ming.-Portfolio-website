@@ -3,10 +3,11 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { ProjectCard } from "@/components/cards/ProjectCard";
 import { AnimatedContainer } from "@/components/layout/AnimatedContainer";
-import { getAllProjects } from "@/lib/mdx";
+import { getFeaturedByCategory } from "@/lib/mdx";
+import { CATEGORY_LABELS } from "@/lib/categories";
 
 export default function Home() {
-  const projects = getAllProjects().slice(0, 3);
+  const featured = getFeaturedByCategory();
 
   return (
     <>
@@ -52,8 +53,16 @@ export default function Home() {
       <Section className="pt-0">
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-            {projects.map((project, i) => (
-              <AnimatedContainer key={project.slug} delay={i * 0.12}>
+            {featured.map(({ category, project }, i) => (
+              <AnimatedContainer key={category} delay={i * 0.12}>
+                <div className="mb-4 flex items-baseline gap-3">
+                  <span className="text-caption uppercase tracking-[0.1em] text-primary/70 font-semibold">
+                    {CATEGORY_LABELS[category].en}
+                  </span>
+                  <span className="text-caption text-foreground-muted/40 font-medium">
+                    {CATEGORY_LABELS[category].zh}
+                  </span>
+                </div>
                 <ProjectCard
                   title={project.frontmatter.title}
                   category={project.frontmatter.category}

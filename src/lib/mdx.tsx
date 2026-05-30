@@ -63,6 +63,22 @@ export function getAllProjects(): Project[] {
     .sort((a, b) => (a.frontmatter.order ?? 99) - (b.frontmatter.order ?? 99));
 }
 
+export function getFeaturedByCategory(): { category: Category; project: Project }[] {
+  const projects = getAllProjects();
+  const result: { category: Category; project: Project }[] = [];
+
+  for (const category of CATEGORIES) {
+    const categoryProjects = projects.filter(
+      (p) => p.frontmatter.category === category,
+    );
+    if (categoryProjects.length > 0) {
+      result.push({ category, project: categoryProjects[0] });
+    }
+  }
+
+  return result;
+}
+
 export function getCategoriesWithCount(): CategoryWithCount[] {
   const projects = getAllProjects();
   return CATEGORIES.map((category) => ({

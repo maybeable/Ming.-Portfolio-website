@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import type { Category } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
 
 const contentDir = path.join(process.cwd(), "content/works");
 
@@ -25,6 +27,11 @@ export interface Project {
   slug: string;
   frontmatter: ProjectFrontmatter;
   content: string;
+}
+
+export interface CategoryWithCount {
+  category: Category;
+  count: number;
 }
 
 export function getProjectSlugs(): string[] {
@@ -54,6 +61,14 @@ export function getAllProjects(): Project[] {
     .map((slug) => getProject(slug))
     .filter((p): p is Project => p !== null)
     .sort((a, b) => (a.frontmatter.order ?? 99) - (b.frontmatter.order ?? 99));
+}
+
+export function getCategoriesWithCount(): CategoryWithCount[] {
+  const projects = getAllProjects();
+  return CATEGORIES.map((category) => ({
+    category,
+    count: projects.filter((p) => p.frontmatter.category === category).length,
+  }));
 }
 
 export async function MDXContent({ source }: { source: string }) {

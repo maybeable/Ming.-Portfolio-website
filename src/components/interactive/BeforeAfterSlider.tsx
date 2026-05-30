@@ -68,7 +68,7 @@ export function BeforeAfterSlider({
         alt={`${alt} - Original`}
         fill
         sizes="(max-width: 768px) 100vw, 80vw"
-        className="object-cover"
+        className="object-contain"
         draggable={false}
       />
 
@@ -82,7 +82,7 @@ export function BeforeAfterSlider({
           alt={`${alt} - Refined`}
           fill
           sizes="(max-width: 768px) 100vw, 80vw"
-          className="object-cover"
+          className="object-contain"
           draggable={false}
         />
       </div>

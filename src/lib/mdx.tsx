@@ -13,10 +13,12 @@ export interface ProjectFrontmatter {
   cover: string;
   hero: string;
   description: string;
-  colors: { name: string; hex: string }[];
-  fonts: { name: string; category: string }[];
+  colors?: { name: string; hex: string }[];
+  fonts?: { name: string; category: string }[];
   images: { src: string; alt: string; aspectRatio?: string }[];
   beforeAfter?: { original: string; refined: string; alt: string }[];
+  retouchFocus?: { title: string; description: string }[];
+  editingProcess?: { step: number; title: string; description: string }[];
 }
 
 export interface Project {

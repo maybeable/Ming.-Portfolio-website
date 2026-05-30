@@ -8,6 +8,8 @@ import { ProjectHero } from "@/components/sections/ProjectHero";
 import { ProjectOverview } from "@/components/sections/ProjectOverview";
 import { TypographySection } from "@/components/sections/TypographySection";
 import { ColorPaletteSection } from "@/components/sections/ColorPaletteSection";
+import { RetouchFocusSection } from "@/components/sections/RetouchFocusSection";
+import { EditingProcessSection } from "@/components/sections/EditingProcessSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { ProjectGallery } from "@/components/sections/ProjectGallery";
 import { BeforeAfterSection } from "@/components/sections/BeforeAfterSection";
@@ -119,8 +121,40 @@ export default async function ProjectPage({ params }: Props) {
         </Section>
       )}
 
+      {/* Retouch Focus — 修图焦点模块 */}
+      {frontmatter.retouchFocus && frontmatter.retouchFocus.length > 0 && (
+        <Section>
+          <Container>
+            <AnimatedContainer>
+              <SectionTitle
+                label="Retouch Focus"
+                title="修图焦点"
+                description="专业人像精修的核心维度，每一步都为呈现自然通透的视觉质感服务。"
+              />
+              <RetouchFocusSection items={frontmatter.retouchFocus} />
+            </AnimatedContainer>
+          </Container>
+        </Section>
+      )}
+
+      {/* Editing Process — 修图流程模块 */}
+      {frontmatter.editingProcess && frontmatter.editingProcess.length > 0 && (
+        <Section>
+          <Container size="wide">
+            <AnimatedContainer>
+              <SectionTitle
+                label="Editing Process"
+                title="修图流程"
+                description="从原始分析到最终增强，四步标准化流程确保每张作品的品质一致性。"
+              />
+              <EditingProcessSection items={frontmatter.editingProcess} />
+            </AnimatedContainer>
+          </Container>
+        </Section>
+      )}
+
       {/* 字体展示 */}
-      {frontmatter.fonts.length > 0 && (
+      {frontmatter.fonts && frontmatter.fonts.length > 0 && (
         <Section>
           <Container size="narrow">
             <AnimatedContainer>
@@ -136,7 +170,7 @@ export default async function ProjectPage({ params }: Props) {
       )}
 
       {/* 色彩方案 */}
-      {frontmatter.colors.length > 0 && (
+      {frontmatter.colors && frontmatter.colors.length > 0 && (
         <Section>
           <Container>
             <AnimatedContainer>

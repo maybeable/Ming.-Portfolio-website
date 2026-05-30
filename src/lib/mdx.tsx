@@ -16,6 +16,7 @@ export interface ProjectFrontmatter {
   colors: { name: string; hex: string }[];
   fonts: { name: string; category: string }[];
   images: { src: string; alt: string; aspectRatio?: string }[];
+  beforeAfter?: { original: string; refined: string; alt: string }[];
 }
 
 export interface Project {

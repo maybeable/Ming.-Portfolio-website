@@ -10,6 +10,7 @@ import { TypographySection } from "@/components/sections/TypographySection";
 import { ColorPaletteSection } from "@/components/sections/ColorPaletteSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { ProjectGallery } from "@/components/sections/ProjectGallery";
+import { BeforeAfterSection } from "@/components/sections/BeforeAfterSection";
 import { NextProject } from "@/components/sections/NextProject";
 import { getProject, getAllProjects } from "@/lib/mdx";
 import type { Metadata } from "next";
@@ -100,6 +101,20 @@ export default async function ProjectPage({ params }: Props) {
             <div className="md:max-w-3xl mx-auto">
               <ProjectGallery images={frontmatter.images} />
             </div>
+          </Container>
+        </Section>
+      )}
+
+      {/* Before / After 对比 */}
+      {frontmatter.beforeAfter && frontmatter.beforeAfter.length > 0 && (
+        <Section>
+          <Container size="wide">
+            <SectionTitle
+              label="Before / After"
+              title="修图对比"
+              description="拖动滑块查看原始图像与精修效果之间的细节变化。"
+            />
+            <BeforeAfterSection images={frontmatter.beforeAfter} />
           </Container>
         </Section>
       )}

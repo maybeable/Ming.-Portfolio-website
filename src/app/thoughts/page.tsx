@@ -17,6 +17,8 @@ interface Feedback {
   name: string | null;
   featured: boolean;
   created_at: string;
+  author_reply: string | null;
+  author_replied_at: string | null;
 }
 
 async function getFeedback() {
@@ -48,8 +50,14 @@ async function getFeedback() {
   }
 }
 
-export default async function ThoughtsPage() {
+export default async function ThoughtsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ key?: string }>;
+}) {
   const { featured, recent } = await getFeedback();
+  const { key } = await searchParams;
+  const isAdmin = !!(key && key === process.env.REPLY_SECRET);
 
   return (
     <>
@@ -89,7 +97,7 @@ export default async function ThoughtsPage() {
       <Section className="pt-24 pb-32 md:pt-32 md:pb-40">
         <Container size="narrow">
           <AnimatedContainer delay={0.2}>
-            <ThoughtList featured={featured} recent={recent} />
+            <ThoughtList featured={featured} recent={recent} isAdmin={isAdmin} adminKey={key || ""} />
           </AnimatedContainer>
         </Container>
       </Section>

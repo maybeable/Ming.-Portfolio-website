@@ -29,13 +29,13 @@ export default function Home() {
               Portfolio &mdash; 2026
             </p>
             <h1 className="text-display max-w-4xl">
-              创造有意义
-              <br />
-              <span className="text-primary">的设计</span>
+              设计可见 思想可感
             </h1>
+            <p className="text-h3 md:text-h2 text-foreground-muted/25 font-light tracking-wide mt-4">
+              Design visible. Thought tangible.
+            </p>
             <p className="text-body-lg text-foreground-muted mt-8 max-w-lg leading-relaxed">
-              专注平面设计与视觉传达，探索形式与功能的平衡。
-              每一个项目都是对视觉语言的深度思考。
+              通过图形、文字与影像构建设计体验。
             </p>
 
             {/* 装饰性分隔 */}
@@ -56,11 +56,15 @@ export default function Home() {
             {featured.map(({ category, project }, i) => (
               <AnimatedContainer key={category} delay={i * 0.12}>
                 <div className="mb-4 flex items-baseline gap-3">
-                  <span className="text-caption uppercase tracking-[0.1em] text-primary/70 font-semibold">
-                    {CATEGORY_LABELS[category].en}
+                  <span className="text-body font-bold text-primary/70">
+                    {CATEGORY_LABELS[category].primary === "zh"
+                      ? CATEGORY_LABELS[category].zh
+                      : CATEGORY_LABELS[category].en}
                   </span>
-                  <span className="text-caption text-foreground-muted/40 font-medium">
-                    {CATEGORY_LABELS[category].zh}
+                  <span className="text-caption uppercase tracking-[0.04em] text-foreground-muted/20 font-medium">
+                    {CATEGORY_LABELS[category].primary === "zh"
+                      ? CATEGORY_LABELS[category].en
+                      : CATEGORY_LABELS[category].zh}
                   </span>
                 </div>
                 <ProjectCard
@@ -100,7 +104,7 @@ export default function Home() {
                   有项目要合作？
                 </h2>
                 <p className="text-body-lg text-foreground-muted mt-4 max-w-md">
-                  无论品牌识别、编辑设计还是数字产品&mdash;&mdash;一起创造一些有意义的设计。
+                  无论品牌识别、编辑设计还是数字产品，聊聊想法。
                 </p>
               </div>
               <Link

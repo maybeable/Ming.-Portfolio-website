@@ -16,12 +16,12 @@ export function getCategoryLabel(category: Category): string {
   return category;
 }
 
-export const CATEGORY_LABELS: Record<Category, { en: string; zh: string }> = {
-  "Brand Identity": { en: "Brand Identity", zh: "品牌识别" },
-  "Poster Design": { en: "Poster Design", zh: "海报设计" },
-  "Portrait Retouching": { en: "Portrait Retouching", zh: "人像修图" },
-  "AI Visual Art": { en: "AI Visual Art", zh: "AI 视觉" },
-  "Editorial Design": { en: "Editorial Design", zh: "编辑设计" },
+export const CATEGORY_LABELS: Record<Category, { en: string; zh: string; primary: "en" | "zh" }> = {
+  "Brand Identity": { en: "Brand Identity", zh: "品牌设计", primary: "zh" },
+  "Poster Design": { en: "Poster Design", zh: "海报设计", primary: "zh" },
+  "Portrait Retouching": { en: "Portrait Retouching", zh: "人像修图", primary: "zh" },
+  "AI Visual Art": { en: "AI Visual Art", zh: "AI视觉创作", primary: "zh" },
+  "Editorial Design": { en: "Editorial Design", zh: "版式设计", primary: "zh" },
 };
 
 export const CATEGORY_META: Record<Category, string> = {

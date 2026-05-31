@@ -30,8 +30,8 @@ export function CategoryFilter({ categoriesWithCount }: CategoryFilterProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <FilterPill
-        label="All"
-        sublabel="全部"
+        label="全部作品"
+        sublabel="All"
         count={totalCount}
         isActive={activeCategory === null}
         onClick={() => handleFilter(null)}
@@ -39,8 +39,8 @@ export function CategoryFilter({ categoriesWithCount }: CategoryFilterProps) {
       {categoriesWithCount.map(({ category, count }) => (
         <FilterPill
           key={category}
-          label={CATEGORY_LABELS[category].en}
-          sublabel={CATEGORY_LABELS[category].zh}
+          label={CATEGORY_LABELS[category].primary === "zh" ? CATEGORY_LABELS[category].zh : CATEGORY_LABELS[category].en}
+          sublabel={CATEGORY_LABELS[category].primary === "zh" ? CATEGORY_LABELS[category].en : CATEGORY_LABELS[category].zh}
           count={count}
           isActive={activeCategory === category}
           onClick={() => handleFilter(category)}
@@ -80,10 +80,10 @@ function FilterPill({
       `}
       disabled={count === 0}
     >
-      <span className="inline-flex items-center gap-2 text-caption uppercase tracking-[0.06em] font-medium">
+      <span className="inline-flex items-center gap-2 text-sm font-semibold">
         {label}
         <span
-          className={`tabular-nums text-[0.65rem] tracking-normal ${
+          className={`tabular-nums text-[0.65rem] font-medium tracking-normal ${
             isActive ? "text-white/70" : "text-foreground-muted/30"
           }`}
         >
@@ -91,8 +91,8 @@ function FilterPill({
         </span>
       </span>
       <span
-        className={`text-[0.65rem] leading-tight mt-0.5 ${
-          isActive ? "text-white/60" : "text-foreground-muted/30"
+        className={`text-[0.6rem] leading-tight mt-0.5 uppercase tracking-[0.04em] font-medium ${
+          isActive ? "text-white/50" : "text-foreground-muted/20"
         }`}
       >
         {sublabel}

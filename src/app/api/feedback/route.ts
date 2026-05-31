@@ -41,6 +41,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const content = String(body.content || "").trim();
     const name = body.name ? String(body.name).trim() : null;
+    const key = body.key ? String(body.key).trim() : null;
+    const isAuthor = !!(key && process.env.REPLY_SECRET && key === process.env.REPLY_SECRET);
 
     if (!content || content.length < 2) {
       return NextResponse.json(
@@ -62,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     const { data: entry, error } = await supabase
       .from("feedback")
-      .insert({ content, name })
+      .insert({ content, name, is_author: isAuthor })
       .select()
       .single();
 

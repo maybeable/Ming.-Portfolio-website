@@ -5,44 +5,68 @@ import { AnimatedContainer } from "@/components/layout/AnimatedContainer";
 import { FeedbackForm } from "@/components/sections/FeedbackForm";
 import { ThoughtList } from "@/components/sections/ThoughtList";
 import { supabase } from "@/lib/supabase/server";
+import type { Feedback, FeedbackReply } from "@/types/feedback";
 
 export const metadata: Metadata = {
   title: "想法",
   description: "对作品与网站的简洁感受——留下你的想法。",
 };
 
-interface Feedback {
-  id: string;
-  content: string;
-  name: string | null;
-  featured: boolean;
-  created_at: string;
-  author_reply: string | null;
-  author_replied_at: string | null;
-}
-
-async function getFeedback() {
+async function getFeedback(isAdmin: boolean) {
   try {
-    const { data: items } = await supabase
+    let query = supabase
       .from("feedback")
       .select()
       .order("created_at", { ascending: false });
 
+    if (!isAdmin) {
+      query = query.eq("deleted", false);
+    }
+
+    const { data: items } = await query;
+
     if (!items) return { featured: [], recent: [] };
+
+    // 取所有反馈的回复
+    const feedbackIds = (items as Feedback[]).map((item) => item.id);
+    const { data: replies } = await supabase
+      .from("feedback_replies")
+      .select()
+      .in("feedback_id", feedbackIds)
+      .order("created_at", { ascending: true });
+
+    const repliesByFeedbackId = new Map<string, FeedbackReply[]>();
+    if (replies) {
+      for (const r of replies as FeedbackReply[]) {
+        const list = repliesByFeedbackId.get(r.feedback_id);
+        if (list) {
+          list.push(r);
+        } else {
+          repliesByFeedbackId.set(r.feedback_id, [r]);
+        }
+      }
+    }
+
+    const attachReplies = (item: Feedback): Feedback => ({
+      ...item,
+      replies: repliesByFeedbackId.get(item.id) || [],
+    });
 
     const featured = (items as Feedback[])
       .filter((item) => item.featured)
       .sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      );
+      )
+      .map(attachReplies);
 
     const recent = (items as Feedback[])
       .sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       )
-      .slice(0, 20);
+      .slice(0, 20)
+      .map(attachReplies);
 
     return { featured, recent };
   } catch {
@@ -55,9 +79,9 @@ export default async function ThoughtsPage({
 }: {
   searchParams: Promise<{ key?: string }>;
 }) {
-  const { featured, recent } = await getFeedback();
   const { key } = await searchParams;
   const isAdmin = !!(key && key === process.env.REPLY_SECRET);
+  const { featured, recent } = await getFeedback(isAdmin);
 
   return (
     <>
@@ -87,7 +111,7 @@ export default async function ThoughtsPage({
         <Container size="narrow">
           <AnimatedContainer delay={0.15}>
             <div className="border-t border-border/50 pt-16 md:pt-20">
-              <FeedbackForm />
+              <FeedbackForm isAdmin={isAdmin} adminKey={key || ""} />
             </div>
           </AnimatedContainer>
         </Container>

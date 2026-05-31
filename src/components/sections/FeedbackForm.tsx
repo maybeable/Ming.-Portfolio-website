@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-export function FeedbackForm() {
+export function FeedbackForm({ isAdmin = false, adminKey = "" }: { isAdmin?: boolean; adminKey?: string }) {
   const router = useRouter();
   const [content, setContent] = useState("");
   const [name, setName] = useState("");
@@ -27,7 +27,8 @@ export function FeedbackForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content: content.trim(),
-          name: name.trim() || null,
+          name: isAdmin ? "作者" : (name.trim() || null),
+          key: isAdmin ? adminKey : null,
         }),
       });
 
@@ -47,7 +48,7 @@ export function FeedbackForm() {
       setErrorMessage("网络出了点问题，请稍后再试。");
       setStatus("error");
     }
-  }, [content, name]);
+  }, [content, name, isAdmin, adminKey]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -119,7 +120,7 @@ export function FeedbackForm() {
                   }
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder="写下你的感受、想法，或任何想说的话…"
+                placeholder={isAdmin ? "以作者身份发布想法…" : "写下你的感受、想法，或任何想说的话…"}
                 rows={5}
                 maxLength={800}
                 disabled={status === "submitting"}
@@ -133,20 +134,26 @@ export function FeedbackForm() {
 
               {/* 底部栏：名字 + 提交 */}
               <div className="flex items-center justify-between gap-4 px-6 pb-4">
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="你的名字，或保持匿名"
-                  maxLength={30}
-                  disabled={status === "submitting"}
-                  className={cn(
-                    "flex-1 bg-transparent text-body-sm text-foreground-muted",
-                    "placeholder:text-foreground-muted/30",
-                    "outline-none",
-                    "disabled:opacity-50 disabled:cursor-not-allowed",
-                  )}
-                />
+                {isAdmin ? (
+                  <span className="flex-1 text-body-sm font-medium text-primary/60">
+                    作者
+                  </span>
+                ) : (
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="你的名字，或保持匿名"
+                    maxLength={30}
+                    disabled={status === "submitting"}
+                    className={cn(
+                      "flex-1 bg-transparent text-body-sm text-foreground-muted",
+                      "placeholder:text-foreground-muted/30",
+                      "outline-none",
+                      "disabled:opacity-50 disabled:cursor-not-allowed",
+                    )}
+                  />
+                )}
                 <button
                   type="button"
                   onClick={handleSubmit}

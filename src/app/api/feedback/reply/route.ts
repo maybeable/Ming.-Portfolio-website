@@ -37,12 +37,12 @@ export async function POST(request: NextRequest) {
     }
 
     const { data: entry, error } = await supabase
-      .from("feedback")
-      .update({
-        author_reply: reply,
-        author_replied_at: new Date().toISOString(),
+      .from("feedback_replies")
+      .insert({
+        feedback_id: id,
+        content: reply,
+        is_author: true,
       })
-      .eq("id", id)
       .select()
       .single();
 

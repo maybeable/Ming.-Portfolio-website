@@ -1,7 +1,10 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useGSAP } from "@/hooks/useGSAP";
+import { gsap } from "@/lib/gsap";
 
 type ProjectHeroProps = {
   title: string;
@@ -18,18 +21,51 @@ export function ProjectHero({
   heroAlt,
   heroSrc,
 }: ProjectHeroProps) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const imageWrapperRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const section = sectionRef.current;
+    const wrapper = imageWrapperRef.current;
+    if (!section || !wrapper) return;
+
+    const img = wrapper.querySelector("img");
+    if (!img) return;
+
+    gsap.fromTo(
+      img,
+      { y: "-8%" },
+      {
+        y: "4%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      }
+    );
+  }, []);
+
   return (
-    <section className="relative w-full">
+    <section ref={sectionRef} className="relative w-full">
       {/* 大图区域 */}
       <div className="relative w-full h-[55vh] min-h-[400px] max-h-[720px] overflow-hidden">
-        <Image
-          src={heroSrc}
-          alt={heroAlt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
+        <div
+          ref={imageWrapperRef}
+          className="absolute inset-0"
+          style={{ top: "-8%", height: "116%" }}
+        >
+          <Image
+            src={heroSrc}
+            alt={heroAlt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
         {/* 极淡叠加层 — 仅用于保证文字可读性 */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
       </div>

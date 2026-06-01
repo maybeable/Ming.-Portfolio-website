@@ -10,25 +10,17 @@ export async function GET(request: NextRequest) {
     const { data: items } = await supabase
       .from("feedback")
       .select()
+      .order("is_pinned", { ascending: false })
+      .order("pinned_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false });
 
     if (!items) {
       return NextResponse.json({ featured: [], recent: [] });
     }
 
-    const featured = items
-      .filter((item) => item.featured)
-      .sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      );
+    const featured = items.filter((item) => item.featured);
 
-    const recent = items
-      .sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      )
-      .slice(0, limit);
+    const recent = items.slice(0, limit);
 
     return NextResponse.json({ featured, recent });
   } catch {

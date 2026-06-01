@@ -17,5 +17,7 @@ export interface Feedback {
   deleted: boolean;
   deleted_at: string | null;
   is_author: boolean;
+  is_pinned: boolean;
+  pinned_at: string | null;
   replies?: FeedbackReply[];
 }

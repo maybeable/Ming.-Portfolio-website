@@ -17,6 +17,8 @@ async function getFeedback(isAdmin: boolean) {
     let query = supabase
       .from("feedback")
       .select()
+      .order("is_pinned", { ascending: false })
+      .order("pinned_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false });
 
     if (!isAdmin) {
@@ -54,17 +56,9 @@ async function getFeedback(isAdmin: boolean) {
 
     const featured = (items as Feedback[])
       .filter((item) => item.featured)
-      .sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      )
       .map(attachReplies);
 
     const recent = (items as Feedback[])
-      .sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      )
       .slice(0, 20)
       .map(attachReplies);
 

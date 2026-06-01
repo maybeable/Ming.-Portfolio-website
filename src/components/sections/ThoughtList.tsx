@@ -56,7 +56,7 @@ function ThoughtCard({
   const [showPermanentDeleteConfirm, setShowPermanentDeleteConfirm] =
     useState(false);
   const [adminActionLoading, setAdminActionLoading] = useState<
-    "delete" | "restore" | "permanent-delete" | null
+    "delete" | "restore" | "permanent-delete" | "pin" | "unpin" | null
   >(null);
 
   const isDeleted = message.deleted;
@@ -170,6 +170,56 @@ function ThoughtCard({
     }
   }, [message.id, adminKey, router]);
 
+  // ─── 置顶 ───
+  const handlePin = useCallback(async () => {
+    setAdminActionLoading("pin");
+    try {
+      const res = await fetch("/api/feedback/pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: message.id,
+          action: "pin",
+          key: adminKey,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      toast.success("已置顶。");
+      router.refresh();
+    } catch {
+      toast.error("操作失败，请稍后再试。");
+    } finally {
+      setAdminActionLoading(null);
+    }
+  }, [message.id, adminKey, router]);
+
+  // ─── 取消置顶 ───
+  const handleUnpin = useCallback(async () => {
+    setAdminActionLoading("unpin");
+    try {
+      const res = await fetch("/api/feedback/pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: message.id,
+          action: "unpin",
+          key: adminKey,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      toast.success("已取消置顶。");
+      router.refresh();
+    } catch {
+      toast.error("操作失败，请稍后再试。");
+    } finally {
+      setAdminActionLoading(null);
+    }
+  }, [message.id, adminKey, router]);
+
+  const isPinned = message.is_pinned && !isDeleted;
+
   return (
     <div
       className={cn(
@@ -180,8 +230,25 @@ function ThoughtCard({
           "relative pl-6 md:pl-8 border-l-[3px] border-l-primary border-b-0 bg-background-soft/30 -mx-6 md:-mx-8 px-6 md:px-8 rounded-r-lg",
         isDeleted &&
           "opacity-60 hover:opacity-75",
+        isPinned &&
+          !isFeatured &&
+          "relative pl-6 md:pl-8 border-l-[3px] border-l-primary/60 border-b-0 bg-primary/[0.02] -mx-6 md:-mx-8 px-6 md:px-8 rounded-r-lg",
       )}
     >
+      {/* ─── 置顶标识 ─── */}
+      {isPinned && (
+        <div className="flex items-center gap-1.5 mb-3">
+          <span className="inline-flex items-center gap-1.5 text-caption font-medium text-primary/70 bg-primary/5 border border-primary/10 rounded-full px-2.5 py-0.5">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-primary/60">
+              <path d="M2.5 7.5L1 11L4.5 9.5L2.5 7.5Z" fill="currentColor" />
+              <path d="M4.5 1L2 5.5L6 7L8 2.5L4.5 1Z" fill="currentColor" fillOpacity="0.6" />
+              <path d="M6 7V11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            </svg>
+            置顶
+          </span>
+        </div>
+      )}
+
       {/* ─── 访客留言内容 ─── */}
       <p
         className={cn(
@@ -393,6 +460,55 @@ function ThoughtCard({
                 </motion.div>
               )}
             </AnimatePresence>
+          )}
+
+          {/* ─── 置顶 / 取消置顶按钮（仅未删除时显示） ─── */}
+          {!isDeleted && (
+            <>
+              {message.is_pinned ? (
+                <button
+                  type="button"
+                  onClick={handleUnpin}
+                  disabled={adminActionLoading !== null}
+                  className={cn(
+                    "text-caption font-medium transition-colors duration-200",
+                    adminActionLoading === "unpin"
+                      ? "text-amber-300 cursor-not-allowed"
+                      : "text-amber-500/70 hover:text-amber-600",
+                  )}
+                >
+                  {adminActionLoading === "unpin" ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="w-3 h-3 border-2 border-amber-300 border-t-amber-500 rounded-full animate-spin" />
+                      处理中
+                    </span>
+                  ) : (
+                    "取消置顶"
+                  )}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handlePin}
+                  disabled={adminActionLoading !== null}
+                  className={cn(
+                    "text-caption font-medium transition-colors duration-200",
+                    adminActionLoading === "pin"
+                      ? "text-primary/30 cursor-not-allowed"
+                      : "text-primary/50 hover:text-primary",
+                  )}
+                >
+                  {adminActionLoading === "pin" ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="w-3 h-3 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+                      处理中
+                    </span>
+                  ) : (
+                    "置顶"
+                  )}
+                </button>
+              )}
+            </>
           )}
 
           {/* ─── 删除按钮（仅未删除留言） ─── */}

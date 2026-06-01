@@ -15,11 +15,11 @@ export default function Home() {
       <Section className="pt-40 pb-20 md:pt-64 md:pb-32 relative overflow-hidden">
         {/* 装饰性几何元素 */}
         <div
-          className="absolute top-0 right-0 w-[40rem] h-[40rem] -translate-y-1/2 translate-x-1/4 rounded-full border border-border/30"
+          className="absolute top-0 right-0 w-[60vw] max-w-[40rem] h-[60vw] max-h-[40rem] -translate-y-1/2 translate-x-1/4 rounded-full border border-border/30"
           aria-hidden="true"
         />
         <div
-          className="absolute bottom-0 left-0 w-[28rem] h-[28rem] translate-y-1/3 -translate-x-1/4 rounded-full border border-border/20"
+          className="absolute bottom-0 left-0 w-[45vw] max-w-[28rem] h-[45vw] max-h-[28rem] translate-y-1/3 -translate-x-1/4 rounded-full border border-border/20"
           aria-hidden="true"
         />
 

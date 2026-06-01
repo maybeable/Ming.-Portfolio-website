@@ -152,6 +152,23 @@ body::after {
   background-size: 256px 256px;
 }
 
+/* ----- Safe Area 兼容（刘海屏 / 动态岛）----- */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.pl-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.pr-safe {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
 /* ----- 焦点环 ----- */
 *:focus-visible {
   outline: 2px solid var(--color-primary);

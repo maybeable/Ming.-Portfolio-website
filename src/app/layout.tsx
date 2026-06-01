@@ -30,7 +30,7 @@ export default function RootLayout({
       lang="zh-CN"
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="min-h-screen bg-background text-foreground font-sans flex flex-col">
+      <body className="min-h-dvh bg-background text-foreground font-sans flex flex-col">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

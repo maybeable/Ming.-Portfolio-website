@@ -68,7 +68,7 @@ function FilterPill({
       onClick={onClick}
       whileTap={{ scale: 0.97 }}
       className={`
-        relative inline-flex flex-col items-center px-4 py-2
+        relative inline-flex flex-col items-center px-4 py-2.5
         rounded-full border transition-colors duration-300 min-w-[4.5rem]
         ${
           isActive

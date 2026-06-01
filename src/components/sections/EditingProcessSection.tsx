@@ -27,7 +27,7 @@ export function EditingProcessSection({ items }: EditingProcessSectionProps) {
               {/* 文字 */}
               <div className="mt-5">
                 <h3 className="text-h4 mb-2">{item.title}</h3>
-                <p className="text-body-sm text-foreground-muted leading-relaxed max-w-[14rem]">
+                <p className="text-body-sm text-foreground-muted leading-relaxed max-w-56">
                   {item.description}
                 </p>
               </div>

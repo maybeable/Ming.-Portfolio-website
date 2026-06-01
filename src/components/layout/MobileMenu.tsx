@@ -54,7 +54,7 @@ export function MobileMenu() {
       {/* 三杠按钮 */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden relative z-50 p-2 -mr-2 text-foreground"
+        className="md:hidden relative z-50 p-2.5 -mr-2.5 text-foreground"
         aria-label="打开菜单"
       >
         <Menu size={24} />
@@ -83,12 +83,12 @@ export function MobileMenu() {
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
                   transition={{ type: "spring", damping: 28, stiffness: 260 }}
-                  className="fixed top-0 right-0 bottom-0 z-50 w-2/4 max-w-sm bg-white/95 backdrop-blur-md md:hidden"
+                  className="fixed top-0 right-0 bottom-0 z-50 w-2/4 max-w-sm bg-white/95 backdrop-blur-md md:hidden pt-safe pb-safe"
                 >
                   {/* 关闭按钮 */}
                   <button
                     onClick={close}
-                    className="absolute top-4 right-4 p-2 text-foreground-muted hover:text-foreground transition-colors"
+                    className="absolute top-4 right-4 p-2.5 text-foreground-muted hover:text-foreground transition-colors"
                     aria-label="关闭菜单"
                   >
                     <X size={24} />

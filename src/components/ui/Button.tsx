@@ -14,9 +14,9 @@ const variants = {
 } as const;
 
 const sizes = {
-  sm: "h-8 px-4 text-body-sm rounded-md gap-1.5",
-  md: "h-10 px-6 text-body rounded-lg gap-2",
-  lg: "h-12 px-8 text-body-lg rounded-xl gap-2.5",
+  sm: "h-9 px-4 text-body-sm rounded-md gap-1.5 min-h-9",
+  md: "h-11 px-6 text-body rounded-lg gap-2 min-h-11",
+  lg: "h-12 px-8 text-body-lg rounded-xl gap-2.5 min-h-12",
 } as const;
 
 type ButtonVariant = keyof typeof variants;

@@ -51,7 +51,7 @@ export function ProjectHero({
   return (
     <section ref={sectionRef} className="relative w-full">
       {/* 大图区域 */}
-      <div className="relative w-full h-[55vh] min-h-[400px] max-h-[720px] overflow-hidden">
+      <div className="relative w-full overflow-hidden" style={{ height: "clamp(360px, 55dvh, 720px)" }}>
         <div
           ref={imageWrapperRef}
           className="absolute inset-0"

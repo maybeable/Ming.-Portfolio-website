@@ -48,24 +48,26 @@ const directions = [
   },
 ];
 
-const experiences = [
+const creativeProcess = [
   {
-    year: "2024 — 至今",
-    org: "独立设计师",
-    role: "自由职业",
-    description: "为品牌客户提供视觉识别、编辑设计与数字设计服务。",
+    id: "01",
+    title: "Research",
+    description: "收集资料与视觉参考。",
   },
   {
-    year: "2023 — 2024",
-    org: "某某设计工作室",
-    role: "平面设计师",
-    description: "负责品牌设计项目，参与多个大型活动的视觉主创工作。",
+    id: "02",
+    title: "Concept",
+    description: "建立核心概念与设计方向。",
   },
   {
-    year: "2021 — 2023",
-    org: "某某艺术学院",
-    role: "视觉传达设计 · 本科",
-    description: "系统学习平面设计、排版学与视觉传达理论。",
+    id: "03",
+    title: "Design",
+    description: "完成视觉探索与方案执行。",
+  },
+  {
+    id: "04",
+    title: "Refine",
+    description: "优化细节并形成最终成果。",
   },
 ];
 
@@ -154,35 +156,26 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      {/* ==================== 4. Selected Experience ==================== */}
+      {/* ==================== 4. Creative Process ==================== */}
       <Section className="bg-background-soft">
         <Container size="narrow">
           <AnimatedContainer>
             <SectionTitle
-              label="Experience"
-              title="经历"
+              label="Creative Process"
+              title="创作方式"
             />
           </AnimatedContainer>
 
-          <div className="space-y-0">
-            {experiences.map((exp, i) => (
-              <AnimatedContainer key={exp.year} delay={i * 0.1}>
-                <div className="border-t border-border py-8 flex flex-col md:flex-row md:items-baseline gap-2 md:gap-12">
-                  <span className="text-body-sm text-foreground-muted font-medium shrink-0 md:w-28">
-                    {exp.year}
-                  </span>
-                  <div>
-                    <h4 className="text-h4">
-                      {exp.org}
-                      <span className="text-body text-foreground-muted font-normal ml-2">
-                        — {exp.role}
-                      </span>
-                    </h4>
-                    <p className="text-body text-foreground-muted mt-1 leading-relaxed max-w-lg">
-                      {exp.description}
-                    </p>
-                  </div>
-                </div>
+          <div className="space-y-16 md:space-y-0 md:grid md:grid-cols-4 md:gap-8">
+            {creativeProcess.map((item, i) => (
+              <AnimatedContainer key={item.id} delay={i * 0.1}>
+                <span className="text-[clamp(3rem,2rem+5vw,6rem)] font-bold leading-none tracking-tighter text-primary/15">
+                  {item.id}
+                </span>
+                <h3 className="text-h3 mt-4">{item.title}</h3>
+                <p className="text-body text-foreground-muted mt-3 leading-relaxed">
+                  {item.description}
+                </p>
               </AnimatedContainer>
             ))}
           </div>

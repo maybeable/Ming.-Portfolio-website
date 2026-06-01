@@ -161,7 +161,7 @@ export default async function ProjectPage({ params }: Props) {
               <SectionTitle
                 label="Typography"
                 title="字体系统"
-                description="字体选择是品牌表达的核心，传达正确的语调与个性。"
+                description={frontmatter.typographyDescription ?? "字体选择是品牌表达的核心，传达正确的语调与个性。"}
               />
               <TypographySection fonts={frontmatter.fonts} />
             </AnimatedContainer>
@@ -177,7 +177,7 @@ export default async function ProjectPage({ params }: Props) {
               <SectionTitle
                 label="Color Palette"
                 title="色彩方案"
-                description="色彩系统构建视觉层级，传递品牌情感与专业度。"
+                description={frontmatter.colorPaletteDescription ?? "色彩系统构建视觉层级，传递品牌情感与专业度。"}
               />
               <ColorPaletteSection colors={frontmatter.colors} />
             </AnimatedContainer>

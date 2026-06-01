@@ -16,7 +16,9 @@ export interface ProjectFrontmatter {
   hero: string;
   description: string;
   colors?: { name: string; hex: string }[];
+  colorPaletteDescription?: string;
   fonts?: { name: string; category: string }[];
+  typographyDescription?: string;
   images: { src: string; alt: string; aspectRatio?: string }[];
   beforeAfter?: { original: string; refined: string; alt: string }[];
   retouchFocus?: { title: string; description: string }[];

@@ -3,7 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
 import { AnimatedContainer } from "@/components/layout/AnimatedContainer";
-import { BackLink } from "@/components/layout/BackLink";
+import { FloatingBackLink } from "@/components/layout/FloatingBackLink";
 import { ProjectHero } from "@/components/sections/ProjectHero";
 import { ProjectOverview } from "@/components/sections/ProjectOverview";
 import { TypographySection } from "@/components/sections/TypographySection";
@@ -64,13 +64,12 @@ export default async function ProjectPage({ params }: Props) {
         heroAlt={frontmatter.title}
       />
 
-      {/* 项目概述 + 返回链接 */}
+      <FloatingBackLink />
+
+      {/* 项目概述 */}
       <Section className="pt-16 md:pt-24">
         <Container size="narrow">
           <AnimatedContainer>
-            <BackLink />
-          </AnimatedContainer>
-          <AnimatedContainer delay={0.1}>
             <div className="mt-12">
               <ProjectOverview
                 category={frontmatter.category}

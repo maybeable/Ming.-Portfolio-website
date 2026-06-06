@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   }
 
   // 生产环境：必须经过 Cloudflare（校验密钥头）
-  const secret = request.headers.get("x-cf-secret")
+  const secret = request.headers.get("x-vercel-secret")
   if (secret !== process.env.CF_ORIGIN_SECRET) {
     return new NextResponse("Forbidden", { status: 403 })
   }

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { supabase } from "@/lib/supabase/server";
+import { verifyTurnstile } from "@/lib/turnstile";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,7 +21,6 @@ export async function GET(request: NextRequest) {
     }
 
     const featured = items.filter((item) => item.featured);
-
     const recent = items.slice(0, limit);
 
     return NextResponse.json({ featured, recent });
@@ -34,24 +35,67 @@ export async function POST(request: NextRequest) {
     const content = String(body.content || "").trim();
     const name = body.name ? String(body.name).trim() : null;
     const key = body.key ? String(body.key).trim() : null;
-    const isAuthor = !!(key && process.env.REPLY_SECRET && key === process.env.REPLY_SECRET);
+    const turnstileToken = body.turnstileToken
+      ? String(body.turnstileToken).trim()
+      : null;
+    const isAuthor = !!(
+      key &&
+      process.env.REPLY_SECRET &&
+      key === process.env.REPLY_SECRET
+    );
 
+    // Content validation
     if (!content || content.length < 2) {
       return NextResponse.json(
         { error: "内容太短了，至少写点什么吧。" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     if (content.length > 800) {
       return NextResponse.json(
         { error: "内容太长了，请控制在 800 字以内。" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     if (name && name.length > 30) {
       return NextResponse.json({ error: "名字太长了。" }, { status: 400 });
+    }
+
+    // Turnstile verification (skip for author)
+    if (!isAuthor) {
+      if (!turnstileToken) {
+        return NextResponse.json(
+          { error: "请完成人机验证。" },
+          { status: 400 }
+        );
+      }
+
+      const verified = await verifyTurnstile(turnstileToken);
+      if (!verified) {
+        return NextResponse.json(
+          { error: "人机验证失败，请刷新后重试。" },
+          { status: 403 }
+        );
+      }
+    }
+
+    // Rate limiting
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+
+    const { allowed, remaining } = checkRateLimit(ip);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "发送太频繁了，请一分钟后再试。" },
+        {
+          status: 429,
+          headers: { "Retry-After": "60" },
+        }
+      );
     }
 
     const { data: entry, error } = await supabase
@@ -63,24 +107,27 @@ export async function POST(request: NextRequest) {
     if (error || !entry) {
       return NextResponse.json(
         { error: "出了点问题，请稍后再试。" },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
     revalidatePath("/contact");
     revalidatePath("/thoughts");
 
-    return NextResponse.json({ success: true, message: entry });
+    return NextResponse.json(
+      { success: true, message: entry },
+      { headers: { "X-RateLimit-Remaining": String(remaining) } }
+    );
   } catch (err) {
     if (err instanceof SyntaxError) {
       return NextResponse.json(
         { error: "请求格式不正确。" },
-        { status: 400 },
+        { status: 400 }
       );
     }
     return NextResponse.json(
       { error: "出了点问题，请稍后再试。" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 const ALLOWED_HOSTS = ["xiaomingswork.xin", "www.xiaomingswork.xin"]
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const host = request.headers.get("host") || ""
 
   // 本地开发直接放行

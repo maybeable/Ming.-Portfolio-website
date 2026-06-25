@@ -7,6 +7,8 @@ import { ThoughtList } from "@/components/sections/ThoughtList";
 import { supabase } from "@/lib/supabase/server";
 import type { Feedback, FeedbackReply } from "@/types/feedback";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "想法",
   description: "对作品与网站的简洁感受——留下你的想法。",

@@ -11,7 +11,6 @@ interface ThoughtListProps {
   featured: Feedback[];
   recent: Feedback[];
   isAdmin: boolean;
-  adminKey: string;
 }
 
 function relativeTime(dateStr: string): string {
@@ -34,12 +33,10 @@ function ThoughtCard({
   message,
   featured: isFeatured,
   isAdmin,
-  adminKey,
 }: {
   message: Feedback;
   featured?: boolean;
   isAdmin: boolean;
-  adminKey: string;
 }) {
   const router = useRouter();
 
@@ -75,7 +72,6 @@ function ThoughtCard({
         body: JSON.stringify({
           id: message.id,
           reply: replyContent.trim(),
-          key: adminKey,
         }),
       });
 
@@ -96,7 +92,7 @@ function ThoughtCard({
       setReplyError("网络出了点问题，请稍后再试。");
       setReplyStatus("error");
     }
-  }, [replyContent, message.id, adminKey, router]);
+  }, [replyContent, message.id, router]);
 
   // ─── 软删除 ───
   const handleDelete = useCallback(async () => {
@@ -108,7 +104,6 @@ function ThoughtCard({
         body: JSON.stringify({
           id: message.id,
           action: "delete",
-          key: adminKey,
         }),
       });
       const data = await res.json();
@@ -121,7 +116,7 @@ function ThoughtCard({
     } finally {
       setAdminActionLoading(null);
     }
-  }, [message.id, adminKey, router]);
+  }, [message.id, router]);
 
   // ─── 恢复 ───
   const handleRestore = useCallback(async () => {
@@ -133,7 +128,6 @@ function ThoughtCard({
         body: JSON.stringify({
           id: message.id,
           action: "restore",
-          key: adminKey,
         }),
       });
       const data = await res.json();
@@ -145,7 +139,7 @@ function ThoughtCard({
     } finally {
       setAdminActionLoading(null);
     }
-  }, [message.id, adminKey, router]);
+  }, [message.id, router]);
 
   // ─── 永久删除 ───
   const handlePermanentDelete = useCallback(async () => {
@@ -156,7 +150,6 @@ function ThoughtCard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: message.id,
-          key: adminKey,
         }),
       });
       const data = await res.json();
@@ -168,9 +161,7 @@ function ThoughtCard({
     } finally {
       setAdminActionLoading(null);
     }
-  }, [message.id, adminKey, router]);
-
-  // ─── 置顶 ───
+  }, [message.id, router]);
   const handlePin = useCallback(async () => {
     setAdminActionLoading("pin");
     try {
@@ -180,7 +171,6 @@ function ThoughtCard({
         body: JSON.stringify({
           id: message.id,
           action: "pin",
-          key: adminKey,
         }),
       });
       const data = await res.json();
@@ -192,7 +182,7 @@ function ThoughtCard({
     } finally {
       setAdminActionLoading(null);
     }
-  }, [message.id, adminKey, router]);
+  }, [message.id, router]);
 
   // ─── 取消置顶 ───
   const handleUnpin = useCallback(async () => {
@@ -204,7 +194,6 @@ function ThoughtCard({
         body: JSON.stringify({
           id: message.id,
           action: "unpin",
-          key: adminKey,
         }),
       });
       const data = await res.json();
@@ -216,7 +205,7 @@ function ThoughtCard({
     } finally {
       setAdminActionLoading(null);
     }
-  }, [message.id, adminKey, router]);
+  }, [message.id, router]);
 
   const isPinned = message.is_pinned && !isDeleted;
 
@@ -672,7 +661,6 @@ export function ThoughtList({
   featured,
   recent,
   isAdmin,
-  adminKey,
 }: ThoughtListProps) {
   const hasContent = featured.length > 0 || recent.length > 0;
 
@@ -701,7 +689,6 @@ export function ThoughtList({
                 message={msg}
                 featured
                 isAdmin={isAdmin}
-                adminKey={adminKey}
               />
             ))}
           </div>
@@ -721,7 +708,6 @@ export function ThoughtList({
               key={msg.id}
               message={msg}
               isAdmin={isAdmin}
-              adminKey={adminKey}
             />
           ))}
         </div>

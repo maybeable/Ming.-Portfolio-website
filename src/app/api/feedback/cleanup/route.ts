@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/server";
 
 // POST — 自动清理已删除超过 30 天的留言
 // 可通过 Vercel Cron Jobs 或外部定时任务调用
@@ -13,14 +13,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 从 Authorization header 或 body 中获取密钥
     let key = "";
     const authHeader = request.headers.get("authorization");
     if (authHeader?.startsWith("Bearer ")) {
       key = authHeader.slice(7);
     } else {
-      const body = await request.json().catch(() => ({}));
-      key = String(body.key || "").trim();
+      key = request.cookies.get("admin_token")?.value || "";
     }
 
     if (key !== expectedKey) {
@@ -30,7 +28,7 @@ export async function POST(request: NextRequest) {
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - 30);
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("feedback")
       .delete()
       .eq("deleted", true)

@@ -1,23 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { supabase } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/server";
+import { checkBodySize } from "@/lib/api-guards";
 
 function unauthorized() {
   return NextResponse.json({ error: "密钥不正确。" }, { status: 401 });
 }
 
-function verifyKey(key: string) {
-  const expectedKey = process.env.REPLY_SECRET;
-  if (!expectedKey) return false;
-  return key === expectedKey;
+function verifyKey(request: NextRequest): boolean {
+  const key = request.cookies.get("admin_token")?.value || ""
+  const expectedKey = process.env.REPLY_SECRET
+  if (!expectedKey) return false
+  return key === expectedKey
 }
 
 export async function POST(request: NextRequest) {
   try {
+    if (!checkBodySize(request)) {
+      return NextResponse.json({ error: "请求体过大。" }, { status: 413 })
+    }
     const body = await request.json();
     const id = String(body.id || "").trim();
     const action = String(body.action || "").trim();
-    const key = String(body.key || "").trim();
 
     if (!id) {
       return NextResponse.json({ error: "缺少留言 ID。" }, { status: 400 });
@@ -27,10 +31,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "无效的操作。" }, { status: 400 });
     }
 
-    if (!verifyKey(key)) return unauthorized();
+    if (!verifyKey(request)) return unauthorized();
 
     if (action === "pin") {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from("feedback")
         .update({ is_pinned: true, pinned_at: new Date().toISOString() })
         .eq("id", id);
@@ -42,7 +46,7 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from("feedback")
         .update({ is_pinned: false, pinned_at: null })
         .eq("id", id);

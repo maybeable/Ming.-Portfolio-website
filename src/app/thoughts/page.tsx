@@ -4,7 +4,9 @@ import { Section } from "@/components/layout/Section";
 import { AnimatedContainer } from "@/components/layout/AnimatedContainer";
 import { FeedbackForm } from "@/components/sections/FeedbackForm";
 import { ThoughtList } from "@/components/sections/ThoughtList";
+import { AdminEntry } from "@/components/sections/AdminEntry";
 import { supabase } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/auth";
 import type { Feedback, FeedbackReply } from "@/types/feedback";
 
 export const revalidate = 60;
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
   description: "对作品与网站的简洁感受——留下你的想法。",
 };
 
-async function getFeedback(isAdmin: boolean) {
+async function getFeedback(admin: boolean) {
   try {
     let query = supabase
       .from("feedback")
@@ -23,7 +25,7 @@ async function getFeedback(isAdmin: boolean) {
       .order("pinned_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false });
 
-    if (!isAdmin) {
+    if (!admin) {
       query = query.eq("deleted", false);
     }
 
@@ -31,7 +33,6 @@ async function getFeedback(isAdmin: boolean) {
 
     if (!items) return { featured: [], recent: [] };
 
-    // 取所有反馈的回复
     const feedbackIds = (items as Feedback[]).map((item) => item.id);
     const { data: replies } = await supabase
       .from("feedback_replies")
@@ -70,14 +71,9 @@ async function getFeedback(isAdmin: boolean) {
   }
 }
 
-export default async function ThoughtsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ key?: string }>;
-}) {
-  const { key } = await searchParams;
-  const isAdmin = !!(key && key === process.env.REPLY_SECRET);
-  const { featured, recent } = await getFeedback(isAdmin);
+export default async function ThoughtsPage() {
+  const admin = await isAdmin();
+  const { featured, recent } = await getFeedback(admin);
 
   return (
     <>
@@ -107,7 +103,7 @@ export default async function ThoughtsPage({
         <Container size="narrow">
           <AnimatedContainer delay={0.15}>
             <div className="border-t border-border/50 pt-16 md:pt-20">
-              <FeedbackForm isAdmin={isAdmin} adminKey={key || ""} />
+              <FeedbackForm isAdmin={admin} />
             </div>
           </AnimatedContainer>
         </Container>
@@ -117,10 +113,19 @@ export default async function ThoughtsPage({
       <Section className="pt-24 pb-32 md:pt-32 md:pb-40">
         <Container size="narrow">
           <AnimatedContainer delay={0.2}>
-            <ThoughtList featured={featured} recent={recent} isAdmin={isAdmin} adminKey={key || ""} />
+            <ThoughtList featured={featured} recent={recent} isAdmin={admin} />
           </AnimatedContainer>
         </Container>
       </Section>
+
+      {/* ==================== Admin Entry ==================== */}
+      {!admin && (
+        <Section className="pb-16 md:pb-24">
+          <Container size="narrow">
+            <AdminEntry />
+          </Container>
+        </Section>
+      )}
     </>
   );
 }

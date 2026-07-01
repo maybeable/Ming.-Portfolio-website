@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { supabase } from "@/lib/supabase/server";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { checkBodySize, checkSameOrigin } from "@/lib/api-guards";
 
 export async function GET(request: NextRequest) {
   try {
@@ -31,17 +32,24 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!checkBodySize(request)) {
+      return NextResponse.json({ error: "请求体过大。" }, { status: 413 })
+    }
+    if (!checkSameOrigin(request)) {
+      return NextResponse.json({ error: "不允许的请求来源。" }, { status: 403 })
+    }
+
     const body = await request.json();
     const content = String(body.content || "").trim();
     const name = body.name ? String(body.name).trim() : null;
-    const key = body.key ? String(body.key).trim() : null;
     const turnstileToken = body.turnstileToken
       ? String(body.turnstileToken).trim()
       : null;
+    const adminKey = request.cookies.get("admin_token")?.value || "";
     const isAuthor = !!(
-      key &&
+      adminKey &&
       process.env.REPLY_SECRET &&
-      key === process.env.REPLY_SECRET
+      adminKey === process.env.REPLY_SECRET
     );
 
     // Content validation

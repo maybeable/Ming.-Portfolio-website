@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { supabase } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/server";
+import { checkBodySize } from "@/lib/api-guards";
 
 export async function POST(request: NextRequest) {
   try {
+    if (!checkBodySize(request)) {
+      return NextResponse.json({ error: "请求体过大。" }, { status: 413 })
+    }
     const body = await request.json();
     const id = String(body.id || "").trim();
     const reply = String(body.reply || "").trim();
-    const key = String(body.key || "").trim();
 
     if (!id) {
       return NextResponse.json({ error: "缺少留言 ID。" }, { status: 400 });
@@ -32,11 +35,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const key = request.cookies.get("admin_token")?.value || "";
     if (key !== expectedKey) {
       return NextResponse.json({ error: "密钥不正确。" }, { status: 401 });
     }
 
-    const { data: entry, error } = await supabase
+    const { data: entry, error } = await supabaseAdmin
       .from("feedback_replies")
       .insert({
         feedback_id: id,

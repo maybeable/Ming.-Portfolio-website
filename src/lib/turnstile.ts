@@ -9,7 +9,8 @@ export async function verifyTurnstile(token: string): Promise<boolean> {
   const secretKey = process.env.TURNSTILE_SECRET_KEY
 
   if (!secretKey) {
-    return true
+    console.error("TURNSTILE_SECRET_KEY is not set — rejecting all verification")
+    return false
   }
 
   const res = await fetch(

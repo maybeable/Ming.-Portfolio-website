@@ -3,18 +3,18 @@ const store = new Map<string, { count: number; resetAt: number }>()
 const WINDOW_MS = 60_000
 const MAX_REQUESTS = 5
 
-// Clean up expired entries periodically
-setInterval(() => {
-  const now = Date.now()
+function lazyCleanup(now: number) {
   for (const [key, entry] of store) {
     if (now > entry.resetAt) {
       store.delete(key)
     }
   }
-}, 60_000)
+}
 
 export function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
   const now = Date.now()
+  lazyCleanup(now)
+
   const entry = store.get(ip)
 
   if (!entry || now > entry.resetAt) {

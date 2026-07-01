@@ -51,7 +51,10 @@ export default async function ProjectPage({ params }: Props) {
   const nextProject =
     currentIndex >= 0 && currentIndex < allProjects.length - 1
       ? allProjects[currentIndex + 1]
-      : allProjects[0];
+      : allProjects.length > 0
+        ? allProjects[0]
+        : ({ slug: "", frontmatter: { title: "", order: 0 } } as const);
+  const hasNext = allProjects.length > 0;
 
   return (
     <>
@@ -204,11 +207,15 @@ export default async function ProjectPage({ params }: Props) {
       <Section className="pb-16 md:pb-24">
         <Container size="narrow">
           <AnimatedContainer>
-            <NextProject
-              order={nextProject.frontmatter.order}
-              title={nextProject.frontmatter.title}
-              slug={nextProject.slug}
-            />
+            {hasNext ? (
+              <NextProject
+                order={nextProject.frontmatter.order}
+                title={nextProject.frontmatter.title}
+                slug={nextProject.slug}
+              />
+            ) : (
+              <div className="border-t border-border/50 pt-12 md:pt-16" />
+            )}
           </AnimatedContainer>
         </Container>
       </Section>

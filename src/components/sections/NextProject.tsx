@@ -18,7 +18,7 @@ export function NextProject({ order, title, slug }: NextProjectProps) {
       </span>
       <div className="flex items-end justify-between mt-3">
         <div className="max-w-lg">
-          {order && (
+          {order !== undefined && (
             <span className="block text-caption text-foreground-muted/40 font-mono mb-1">
               {String(order).padStart(2, "0")}
             </span>

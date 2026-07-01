@@ -9,13 +9,11 @@ import { cn } from "@/lib/utils";
 type Status = "idle" | "submitting" | "success" | "error";
 type VerifyPhase = "idle" | "verifying";
 
-export function FeedbackForm({
-  isAdmin = false,
-  adminKey = "",
-}: {
+interface FeedbackFormProps {
   isAdmin?: boolean;
-  adminKey?: string;
-}) {
+}
+
+export function FeedbackForm({ isAdmin = false }: FeedbackFormProps) {
   const router = useRouter();
   const [content, setContent] = useState("");
   const [name, setName] = useState("");
@@ -24,6 +22,10 @@ export function FeedbackForm({
   const [verifyPhase, setVerifyPhase] = useState<VerifyPhase>("idle");
   const turnstileTokenRef = useRef<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const contentRef = useRef(content);
+  const nameRef = useRef(name);
+  contentRef.current = content;
+  nameRef.current = name;
 
   const submitForm = useCallback(
     async (token: string | null) => {
@@ -36,10 +38,9 @@ export function FeedbackForm({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            content: content.trim(),
-            name: isAdmin ? "作者" : name.trim() || null,
-            key: isAdmin ? adminKey : null,
-            turnstileToken: isAdmin ? null : token,
+            content: contentRef.current.trim(),
+            name: isAdmin ? "作者" : nameRef.current.trim() || null,
+            turnstileToken: token,
           }),
         });
 
@@ -64,7 +65,7 @@ export function FeedbackForm({
         setStatus("error");
       }
     },
-    [content, name, isAdmin, adminKey]
+    [isAdmin, router]
   );
 
   const handleClickSubmit = useCallback(() => {

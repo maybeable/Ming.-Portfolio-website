@@ -8,7 +8,7 @@
 
 技术栈：
 
-\- Next.js 15 App Router
+\- Next.js 16 App Router（Proxy 中间件使用 `src/proxy.ts` 默认导出）
 
 \- TypeScript
 
@@ -290,6 +290,86 @@
 
 \- 硬编码的布局数值
 
+
+
+\# 安全与认证
+
+\## 认证体系
+
+\- 管理认证通过 HTTP-only cookie `admin_token` 实现，密钥仅存储在服务端 `REPLY_SECRET`
+
+\- 服务端：`src/lib/auth.ts` 提供 `isAdmin()`（Server Component 用）和 `getAdminKey()`（API Route 用）
+
+\- 登录入口：`/api/auth/login`（POST `{ key }`），登出：`/api/auth/logout`（POST 无 body）
+
+\- 客户端组件只需 `isAdmin` prop 判断管理员状态，不传递密钥本身
+
+\- 页面底部 `AdminEntry` 组件提供隐式登录入口（仅非管理员时可见）
+
+\## Supabase 客户端
+
+\- `src/lib/supabase/server.ts` 导出两个客户端：
+
+  - `supabase`：公共只读 + 公开插入（anon key，受 RLS 保护）
+
+  - `supabaseAdmin`：管理写操作（service_role）——仅用于 reply/manage/pin/cleanup
+
+\- 页面和公共 GET 用 `supabase`，后台增删改用 `supabaseAdmin`
+
+\## API Route 安全
+
+\- 所有 `request.json()` 前先检查 `checkBodySize()`（上限 10KB，在 `src/lib/api-guards.ts`）
+
+\- 公开 mutating endpoint 必须检查 `checkSameOrigin()`（验证 Origin 头）
+
+\- 管理 endpoint 的认证从 cookie 中读取 `admin_token`，不从 body 取 key
+
+\## 安全响应头
+
+全局 headers（`next.config.ts`）：
+
+\- CSP（script-src 允许 challenges.cloudflare.com 用于 Turnstile）
+
+\- HSTS 2 年、X-Frame-Options DENY、X-Content-Type-Options nosniff、Referrer-Policy strict-origin-when-cross-origin
+
+\## 代理（Proxy）
+
+\- Next.js 16 使用 `src/proxy.ts` 默认导出（不是 `middleware.ts`）
+
+\- 生产环境通过 `x-vercel-secret` 头校验 Cloudflare 转发，密钥存 `CF_ORIGIN_SECRET` 环境变量
+
+\## 环境变量红线
+
+以下变量勿动（已在 Vercel 和 .env.local 配置）：
+
+\- `SUPABASE_URL`、`SUPABASE_SERVICE_ROLE_KEY`
+
+\- `NEXT_PUBLIC_SUPABASE_ANON_KEY`（公共只读）
+
+\- `REPLY_SECRET`（管理密钥）
+
+\- `CF_ORIGIN_SECRET`（Cloudflare 回源密钥）
+
+\- `TURNSTILE_SECRET_KEY`、`NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+
+
+\# 错误处理
+
+\- 全局 `src/app/error.tsx` — 运行时错误回退页，提供重试按钮
+
+\- 全局 `src/app/not-found.tsx` — 自定义 404 页面
+
+\- 关键异步路由有 `loading.tsx`：`/works/[slug]`、`/thoughts`
+
+\- API route 异常时返回中文错误信息，不暴露堆栈
+
+\# MDX 校验
+
+\- `getProject()` 入口做路径穿越防护（拒 `..`、`/`、`\`）
+
+\- 必填字段查验：title、category、year、cover、hero、description、images
+
+\- 新增 MDX 文件时留意必填字段，缺失会在编译时抛错误
 
 
 \# 可访问性

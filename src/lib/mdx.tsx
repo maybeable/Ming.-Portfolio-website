@@ -44,8 +44,24 @@ export function getProjectSlugs(): string[] {
     .map((f) => f.replace(/\.mdx$/, ""));
 }
 
+function validateFrontmatter(data: Record<string, unknown>, slug: string): ProjectFrontmatter {
+  const required = ["title", "category", "year", "cover", "hero", "description", "images"] as const
+  const missing = required.filter((k) => !data[k])
+  if (missing.length > 0) {
+    throw new Error(`[${slug}] Missing required frontmatter fields: ${missing.join(", ")}`)
+  }
+  if (!Array.isArray(data.images)) {
+    throw new Error(`[${slug}] "images" must be an array`)
+  }
+  return data as unknown as ProjectFrontmatter
+}
+
 export function getProject(slug: string): Project | null {
-  const filePath = path.join(contentDir, `${decodeURIComponent(slug)}.mdx`);
+  const decoded = decodeURIComponent(slug)
+  if (decoded.includes("..") || decoded.includes("/") || decoded.includes("\\")) {
+    return null
+  }
+  const filePath = path.join(contentDir, `${decoded}.mdx`);
   if (!fs.existsSync(filePath)) return null;
 
   const raw = fs.readFileSync(filePath, "utf-8");
@@ -53,7 +69,7 @@ export function getProject(slug: string): Project | null {
 
   return {
     slug,
-    frontmatter: data as ProjectFrontmatter,
+    frontmatter: validateFrontmatter(data as Record<string, unknown>, slug),
     content,
   };
 }
